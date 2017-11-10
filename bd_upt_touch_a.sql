@@ -2,85 +2,93 @@ CREATE DATABASE bd_upt_touch_a;
 
 USE bd_upt_touch_a;
 
-CREATE TABLE `servicios` (
-	`IdServicio` INT(10) NOT NULL AUTO_INCREMENT,
-	`NombreServicio` VARCHAR(250) NOT NULL,
-	PRIMARY KEY (`IdServicio`)
-)
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB
-AUTO_INCREMENT=2
-
-CREATE TABLE `detalleservicios` (
-	`IdDetalleServicio` INT(10) NOT NULL AUTO_INCREMENT,
-	`FechaServicio` VARCHAR(250) NOT NULL,
-	`EstadoServicio` ENUM('realizado','incompleto') NOT NULL,
-	`IdServicio` INT(10) NOT NULL,
-	`IdUsuario` INT(10) NOT NULL,
-	`IdUbicacion` INT(10) NOT NULL,
-	PRIMARY KEY (`IdDetalleServicio`),
-	INDEX `IdServicio` (`IdServicio`),
-	INDEX `IdUsuario` (`IdUsuario`),
-	INDEX `IdUbicacion` (`IdUbicacion`),
-	CONSTRAINT `detalleservicios_ibfk_1` FOREIGN KEY (`IdServicio`) REFERENCES `servicios` (`IdServicio`),
-	CONSTRAINT `detalleservicios_ibfk_2` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`),
-	CONSTRAINT `detalleservicios_ibfk_3` FOREIGN KEY (`IdUbicacion`) REFERENCES `ubicacion` (`IdUbicacion`)
-)
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB
-AUTO_INCREMENT=2
-;
-
-CREATE TABLE `usuarios` (
-	`IdUsuario` INT(10) NOT NULL AUTO_INCREMENT,
-	`Contrasena` VARCHAR(40) NOT NULL,
-	`Nombres` VARCHAR(250) NOT NULL,
-	`EstadoUsuario` ENUM('activo','inactivo') NOT NULL,
-	`Email` VARCHAR(100) NOT NULL,
-	`Foto` LONGBLOB NULL,
-	`NivelUsuario` ENUM('cliente','empleado','administrador') NOT NULL,
-	`Celular` VARCHAR(9) NOT NULL,
-	PRIMARY KEY (`IdUsuario`)
-)
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB
-AUTO_INCREMENT=7
-;
-
-CREATE TABLE `ubicacion` (
-	`IdUbicacion` INT(10) NOT NULL AUTO_INCREMENT,
-	`Latitud` VARCHAR(40) NOT NULL,
-	`Longitud` VARCHAR(40) NOT NULL,
-	`IdUsuario` INT(10) NOT NULL,
-	`Ciudad` VARCHAR(10) NOT NULL,
-	`Direccion` VARCHAR(250) NOT NULL,
-	PRIMARY KEY (`IdUbicacion`),
-	INDEX `IdUsuario` (`IdUsuario`),
-	CONSTRAINT `ubicacion_ibfk_1` FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`)
-)
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB
-AUTO_INCREMENT=2
-;
-
-CREATE TABLE `asignados`(
-	`IdAsignados` INT(10) NOT NULL AUTO_INCREMENT,
-	PRIMARY KEY (`IdAsignado`)
+CREATE TABLE servicios (
+	IdServicio INT(10) NOT NULL AUTO_INCREMENT,
+	NombreServicio VARCHAR(250) NOT NULL,
+	PRIMARY KEY (IdServicio)
 );
 
-CREATE TABLE `detalleAsignados`(
-	`IdDetalleAsignados` INT(10) NOT NULL AUTO_INCREMENT,
-	`IdAsignados` INT(10) NOT NULL,
-	`IdUbicacion` INT(10) NOT NULL,
-	`IdUsuario` INT(10) NOT NULL,
-	PRIMARY KEY (`IdDetalleAsignados`)
+CREATE TABLE ubicacion (
+	IdUbicacion INT(10)NOT NULL AUTO_INCREMENT,
+	Latitud varchar(50),
+	Longitud varchar (50),
+	Ciudad varchar(50),
+	Direccion varchar(250),
+	PRIMARY KEY (IdUbicacion)
 );
 
-CREATE TABLE `opinion` (
-	`IdOpinion` INT(10) NOT NULL AUTO_INCREMENT,
-	`IdUsuario` INT() NOT NULL,
-	`Descripcion` varchar(250) NOT NULL,
-	`ValorOpinion` varchar(50) NOT NULL,
-	`ValorOpinion` date,
-	FOREIGN KEY (`IdUsuario`) REFERENCES `usuarios` (`IdUsuario`)
-)
+CREATE TABLE usuarios (
+	IdUsuario INT(10) NOT NULL AUTO_INCREMENT,
+	Contrasena VARCHAR(40) NOT NULL,
+	Nombres VARCHAR(250) NOT NULL,
+	EstadoUsuario ENUM('activo','inactivo') NOT NULL,
+	Email VARCHAR(100) NOT NULL,
+	Foto LONGBLOB NULL,
+	NivelUsuario ENUM('cliente','empleado','administrador') NOT NULL,
+	Celular VARCHAR(9) NOT NULL,
+	PRIMARY KEY (IdUsuario)
+);
+
+CREATE TABLE solicitud (
+	IdSolicitud INT(10)NOT NULL AUTO_INCREMENT,
+	EstadoSolicitud ENUM('aceptado','rechazado') NOT NULL,
+	IdUsuario INT(10)NOT NULL,
+	IdServicio INT(10)NOT NULL,
+	PRIMARY KEY (IdSolicitud),
+	FOREIGN KEY (IdUsuario) REFERENCES usuarios (IdUsuario),
+	FOREIGN KEY (IdServicio) REFERENCES servicios (IdServicio)
+);
+
+
+CREATE TABLE asignados(
+	IdAsignados INT(10) NOT NULL AUTO_INCREMENT,
+	IdUbicacion INT(10) NOT NULL,
+	IdUsuario INT(10) NOT NULL,
+	PRIMARY KEY (IdAsignados),
+	FOREIGN KEY (IdUsuario) REFERENCES usuarios (IdUsuario),
+	FOREIGN KEY (IdUbicacion) REFERENCES ubicacion (IdUbicacion)
+);
+
+CREATE TABLE enviardatos(
+	IdEnviardatos INT(10) NOT NULL AUTO_INCREMENT,
+	IdUsuario INT(10) NOT NULL,
+	PRIMARY KEY (IdEnviardatos),
+	FOREIGN KEY (IdUsuario) REFERENCES usuarios (IdUsuario)
+);
+
+CREATE TABLE opinion (
+	IdOpinion INT(10) NOT NULL AUTO_INCREMENT,
+	IdUsuario INT(10) NOT NULL,
+	Descripcion varchar(250) NOT NULL,
+	ValorOpinion varchar(50) NOT NULL,
+	FechaOpinion date,
+	PRIMARY KEY (IdOpinion),
+	FOREIGN KEY (IdUsuario) REFERENCES usuarios (IdUsuario)
+);
+
+CREATE TABLE detalleservicios (
+	IdDetalleServicio INT(10) NOT NULL AUTO_INCREMENT,
+	NivelServicio ENUM('alto','bajo')  NOT NULL,
+	FechaServicio date,
+	EstadoServicio ENUM('realizado','incompleto') NOT NULL,
+	IdServicio INT(10) NOT NULL,
+	IdUsuario INT(10) NOT NULL,
+	IdUbicacion INT(10) NOT NULL,
+	PRIMARY KEY (IdDetalleServicio),
+	FOREIGN KEY (IdServicio) REFERENCES servicios (IdServicio),
+	FOREIGN KEY (IdUsuario) REFERENCES usuarios (IdUsuario),
+	FOREIGN KEY (IdUbicacion) REFERENCES ubicacion (IdUbicacion)
+);
+
+CREATE TABLE reportes (
+	IdReportes INT(10) NOT NULL AUTO_INCREMENT,
+	IdOpinion INT(10) NOT NULL,
+	IdAsignados INT(10) NOT NULL,
+	IdSolicitud INT(10)NOT NULL,
+	IdServicio INT(10) NOT NULL,
+	PRIMARY KEY (IdReportes),
+	FOREIGN KEY (IdOpinion) REFERENCES opinion (IdOpinion),
+	FOREIGN KEY (IdServicio) REFERENCES servicios (IdServicio),
+	FOREIGN KEY (IdSolicitud) REFERENCES solicitud (IdSolicitud),
+	FOREIGN KEY (IdAsignados) REFERENCES asignados (IdAsignados)
+);
