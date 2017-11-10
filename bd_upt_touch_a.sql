@@ -50,9 +50,9 @@ CREATE TABLE asignaciones(
 );
 
 CREATE TABLE datosempleado(
-	IdEnviardatos INT(10) NOT NULL AUTO_INCREMENT,
+	IdDatosEmpleado INT(10) NOT NULL AUTO_INCREMENT,
 	IdUsuario INT(10) NOT NULL,
-	PRIMARY KEY (IdEnviardatos),
+	PRIMARY KEY (IdDatosEmpleado),
 	FOREIGN KEY (IdUsuario) REFERENCES usuarios (IdUsuario)
 );
 
