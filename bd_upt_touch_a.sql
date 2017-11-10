@@ -29,7 +29,7 @@ CREATE TABLE usuarios (
 	PRIMARY KEY (IdUsuario)
 );
 
-CREATE TABLE solicitud (
+CREATE TABLE solicitudes (
 	IdSolicitud INT(10)NOT NULL AUTO_INCREMENT,
 	EstadoSolicitud ENUM('aceptado','rechazado') NOT NULL,
 	IdUsuario INT(10)NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE solicitud (
 );
 
 
-CREATE TABLE asignados(
+CREATE TABLE asignaciones(
 	IdAsignados INT(10) NOT NULL AUTO_INCREMENT,
 	IdUbicacion INT(10) NOT NULL,
 	IdUsuario INT(10) NOT NULL,
@@ -49,14 +49,14 @@ CREATE TABLE asignados(
 	FOREIGN KEY (IdUbicacion) REFERENCES ubicacion (IdUbicacion)
 );
 
-CREATE TABLE enviardatos(
+CREATE TABLE datosempleado(
 	IdEnviardatos INT(10) NOT NULL AUTO_INCREMENT,
 	IdUsuario INT(10) NOT NULL,
 	PRIMARY KEY (IdEnviardatos),
 	FOREIGN KEY (IdUsuario) REFERENCES usuarios (IdUsuario)
 );
 
-CREATE TABLE opinion (
+CREATE TABLE opiniones (
 	IdOpinion INT(10) NOT NULL AUTO_INCREMENT,
 	IdUsuario INT(10) NOT NULL,
 	Descripcion varchar(250) NOT NULL,
@@ -87,8 +87,8 @@ CREATE TABLE reportes (
 	IdSolicitud INT(10)NOT NULL,
 	IdServicio INT(10) NOT NULL,
 	PRIMARY KEY (IdReportes),
-	FOREIGN KEY (IdOpinion) REFERENCES opinion (IdOpinion),
+	FOREIGN KEY (IdOpinion) REFERENCES opiniones (IdOpinion),
 	FOREIGN KEY (IdServicio) REFERENCES servicios (IdServicio),
-	FOREIGN KEY (IdSolicitud) REFERENCES solicitud (IdSolicitud),
-	FOREIGN KEY (IdAsignados) REFERENCES asignados (IdAsignados)
+	FOREIGN KEY (IdSolicitud) REFERENCES solicitudes (IdSolicitud),
+	FOREIGN KEY (IdAsignados) REFERENCES asignaciones (IdAsignados)
 );
